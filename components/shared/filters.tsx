@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils';
 import { FC } from 'react';
-import { Title, FilterCheckbox, RangeSlider } from '@/components/shared';
+import { Title, FilterCheckbox, RangeSlider, CheckboxFiltersGroup } from '@/components/shared';
 import { Input } from '@/components/ui';
 
 interface Props {
@@ -26,6 +26,91 @@ export const Filters: FC<Props> = ({ className }) => {
 
                 <RangeSlider min={0} max={3000} step={10} value={[0, 3000]} />
             </div>
+
+            <CheckboxFiltersGroup
+                className='mt-5'
+                title='Ингредиенты'
+                limit={6}
+                items={[
+                    {
+                        text: 'Сырный соус',
+                        value: '1',
+                    },
+
+                    {
+                        text: 'Моцарелла',
+                        value: '2',
+                    },
+                    {
+                        text: 'Чеснок',
+                        value: '3',
+                    },
+                    {
+                        text: 'Солёные огурчики',
+                        value: '4',
+                    },
+                    {
+                        text: 'Красный лук',
+                        value: '5',
+                    },
+                    {
+                        text: 'Томаты',
+                        value: '6',
+                    },
+                    {
+                        text: 'Сырный соус',
+                        value: '1',
+                    },
+
+                    {
+                        text: 'Моцарелла',
+                        value: '2',
+                    },
+                    {
+                        text: 'Чеснок',
+                        value: '3',
+                    },
+                    {
+                        text: 'Солёные огурчики',
+                        value: '4',
+                    },
+                    {
+                        text: 'Красный лук',
+                        value: '5',
+                    },
+                    {
+                        text: 'Томаты',
+                        value: '6',
+                    },
+                ]}
+                defaultItems={[
+                    {
+                        text: 'Сырный соус',
+                        value: '1',
+                    },
+
+                    {
+                        text: 'Моцарелла',
+                        value: '2',
+                    },
+                    {
+                        text: 'Чеснок',
+                        value: '3',
+                    },
+                    {
+                        text: 'Солёные огурчики',
+                        value: '4',
+                    },
+                    {
+                        text: 'Красный лук',
+                        value: '5',
+                    },
+                    {
+                        text: 'Томаты',
+                        value: '6',
+                    },
+                ]}
+            />
         </div>
     );
 };
