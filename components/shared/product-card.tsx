@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { FC } from 'react';
 import { Title } from '@/components/shared';
 import { Button } from '@/components/ui';
+import { Plus } from 'lucide-react';
 
 interface Props {
     id: number;
@@ -11,9 +12,9 @@ interface Props {
     className?: string;
 }
 
-export const ProductCart: FC<Props> = ({ id, name, price, imageUrl, className }) => {
+export const ProductCard: FC<Props> = ({ id, name, price, imageUrl, className }) => {
     return (
-        <div className=''>
+        <div className={className}>
             <Link href={`/product/${id}`}>
                 <div className='flex justify-center p-6 bg-secondary rounded-lg h-[260px]'>
                     <img className='w-[215px] h-[215px]' src={imageUrl} alt={name} />
@@ -23,13 +24,14 @@ export const ProductCart: FC<Props> = ({ id, name, price, imageUrl, className })
 
                 <p className='text-sm text-gray-400'>Тут будут ингридиенты</p>
 
-                <div className='flex justify-center items-center mt-4'>
+                <div className='flex justify-between items-center mt-4'>
                     <span className='text-[20px]'>
                         <b>от {price} ₽</b>
                     </span>
 
                     <Button variant='secondary' className='text-base font-bold'>
-                        В корзину
+                        <Plus size={20} className='mr-1' />
+                        Добавить
                     </Button>
                 </div>
             </Link>
