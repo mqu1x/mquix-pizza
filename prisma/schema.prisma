@@ -1,0 +1,180 @@
+// схема базы данных
+
+//  сгенерировать эту схему для prisma-client
+generator client {
+    provider = "prisma-client-js"
+}
+
+//с какой БД необходимо работать
+datasource db {
+  provider = "postgresql"
+  url = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+}
+
+// описание таблиц
+
+model User {
+    id Int @id @default(autoincrement())
+
+    fullName String
+    email String @unique
+    password String
+    role UserRole @default(USER)
+
+    provider String? // через какую соц. сеть вошел
+    providerId String?
+
+    cart Cart?
+    order Order[]
+    verificationCode VerificationCode?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+}
+
+model Category {
+    id Int @id @default(autoincrement())
+
+    name String @unique
+    products Product[] //связь категории с продуктами
+}
+
+model Product {
+    id Int @id @default(autoincrement())
+
+    name String
+    imageUrl String
+
+    ingredients  Ingredient[] //many 2 many
+    items  ProductItem[]
+
+    category Category @relation(fields: [CategoryId], references: [id]) //для JS
+    CategoryId Int
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+
+// вариации продуктов
+model ProductItem {
+    id Int @id @default(autoincrement())
+
+    price Int
+    size Int? //опционально
+    pizzaType Int? //тонкое / толстое тесто
+
+    cartItems CartItem[]
+
+    product Product @relation(fields: [productId], references: [id]) 
+    productId Int
+}
+
+model Ingredient {
+    id Int @id @default(autoincrement())
+
+    name String
+    price Int
+    imageUrl String
+
+    products Product[] // один ингредиент может иметь множество продуктов
+    cartItems CartItem[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model Cart {
+    id Int @id @default(autoincrement())
+    
+    user User? @relation(fields: [userId], references: [id])
+    userId Int? @unique
+
+    items CartItem[]
+
+    // токен юзера
+    tokenId String
+
+    totalAmount Int @default(0)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model CartItem {
+    id Int @id @default(autoincrement())
+
+    cart Cart @relation(fields: [cartId], references: [id])
+    cartId Int
+
+    productItem ProductItem @relation(fields: [productItemId], references: [id])
+    productItemId Int
+
+    quantity Int
+
+    // pizzaSize Int?
+    // pizzaType Int?
+
+    ingredients Ingredient[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt 
+
+}
+
+// какой заказ создает пользователь
+model Order {
+    id Int @id @default(autoincrement())
+
+    user User? @relation(fields: [userId], references: [id])
+    userId Int?
+
+    token String
+
+    totalAmount Int
+    status OrderStatus
+    paymentId String? //id оплаты Юмани
+
+    items Json
+
+    fullName String
+    address String
+    email String
+    phone String
+    comment String?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt 
+}
+
+
+//код верификации
+model VerificationCode {
+    id Int @id @default(autoincrement())
+
+    user User @relation(fields: [userId], references: [id])
+    userId Int @unique
+
+    code String
+
+    // expiresAt DateTime @default(now()) //TODO: сделать на уровне JS
+    createdAt DateTime @default(now())
+
+    //групповая уникальность
+    // в момент создания кода прверяются два поля
+    @@unique([userId, code])
+}
+
+
+enum OrderStatus {
+    PENDING // нп. Создал ордер, но не оплатил
+    SUCCEEDED // нп. Оплатил
+    CANCELLED // нп. Создал ордер, оплата не прошла. Закончились бабки, нечем платить ;(
+}
+
+enum UserRole {
+    ADMIN
+    USER
+}
