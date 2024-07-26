@@ -20,6 +20,7 @@ model User {
     fullName String
     email String @unique
     password String
+    verified DateTime?
     role UserRole @default(USER)
 
     provider String? // через какую соц. сеть вошел
@@ -39,6 +40,9 @@ model Category {
 
     name String @unique
     products Product[] //связь категории с продуктами
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }
 
 model Product {
@@ -50,8 +54,8 @@ model Product {
     ingredients  Ingredient[] //many 2 many
     items  ProductItem[]
 
-    category Category @relation(fields: [CategoryId], references: [id]) //для JS
-    CategoryId Int
+    category Category @relation(fields: [categoryId], references: [id]) //для JS
+    categoryId Int
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -95,7 +99,7 @@ model Cart {
     items CartItem[]
 
     // токен юзера
-    tokenId String
+    token String
 
     totalAmount Int @default(0)
 
